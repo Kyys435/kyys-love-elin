@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>KYYS 🤍 ELIN — HD-in 4K</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg1:#08061a; --bg2:#1a0f3b;
+  --accent:#a783ff; --accent2:#c7b3ff; --muted:rgba(230,238,251,0.6);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Orbitron',sans-serif;color:#e7f2ff;
+  background:radial-gradient(circle at 50% 20%,var(--bg2) 0%,var(--bg1) 100%);
+  display:flex;flex-direction:column;align-items:center;min-height:100vh;overflow-x:hidden;
+}
+
+/* SPLASH (no zoom) */
+.intro{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at center,var(--bg2),var(--bg1));
+  z-index:9999;color:white;font-size:2.5rem;letter-spacing:4px;
+  font-weight:800;text-shadow:0 0 18px var(--accent2),0 0 34px var(--accent);
+  animation:glowPulse 2.8s infinite alternate; opacity:1; transition:opacity .9s ease;
+}
+.intro.hide{opacity:0;pointer-events:none}
+@keyframes glowPulse{from{text-shadow:0 0 10px var(--accent2),0 0 20px var(--accent)}to{text-shadow:0 0 25px white,0 0 45px var(--accent2)}}
+
+/* layout */
+.container{width:95%;max-width:920px;margin-top:18px;text-align:center}
+.topbar{height:56px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.03);border-radius:10px;color:var(--accent);letter-spacing:2px;font-size:20px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+.card{background:rgba(0,0,0,0.28);border-radius:16px;padding:18px;margin-top:18px;box-shadow:0 10px 40px rgba(4,6,30,0.6)}
+.label{font-weight:600;color:var(--muted);margin:10px 0}
+.input-url{width:100%;padding:12px;border-radius:10px;background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.03);color:#dfe9ff;font-size:14px}
+.upload-row{display:flex;align-items:center;gap:12px;justify-content:center;margin:10px 0}
+.file-btn{background:linear-gradient(90deg,var(--accent),var(--accent2));padding:10px 18px;border-radius:10px;border:none;color:#08102a;font-weight:700;cursor:pointer;box-shadow:0 8px 30px rgba(102,123,255,0.25)}
+.file-name{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.enhance-btn,.download-btn{
+  width:92%;max-width:520px;background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border:none;color:#08102a;font-weight:800;padding:16px;border-radius:12px;font-family:'Orbitron',sans-serif;letter-spacing:3px;font-size:18px;cursor:pointer;box-shadow:0 12px 40px rgba(102,123,255,0.25);transition:transform .12s;margin-top:12px}
+.enhance-btn:active,.download-btn:active{transform:translateY(2px) scale(.98)}
+.download-btn.hidden{display:none !important}
+.section-title{margin-top:20px;font-size:18px;color:var(--accent)}
+.preview-card{width:100%;border-radius:12px;padding:10px;background:rgba(255,255,255,0.03);margin-top:8px}
+.preview-canvas{width:100%;height:auto;border-radius:10px;display:block;background:#020214;cursor:pointer}
+.footer{margin:20px 0;color:var(--muted);font-size:13px}
+.loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(1,4,10,0.7);backdrop-filter:blur(6px);visibility:hidden;opacity:0;transition:opacity .18s,visibility .18s;z-index:9998}
+.loading.show{visibility:visible;opacity:1}
+.loader{padding:18px 24px;border-radius:12px;text-align:center;background:rgba(255,255,255,0.03);box-shadow:0 0 20px rgba(100,120,255,0.12)}
+.loader .title{color:var(--accent);font-weight:700;margin-bottom:6px}
+.hint{margin-top:8px;color:var(--muted);font-size:13px}
+@media (max-width:420px){ .intro{font-size:1.6rem} .enhance-btn,.download-btn{font-size:16px} }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div class="intro" id="intro">KYYS <span style="color:var(--accent)">🤍</span> ELIN</div>
+
+<!-- AUDIO (file intro.mp3 must be in same folder as index.html) -->
+<audio id="bgMusic" preload="auto">
+  <source src="intro.mp3" type="audio/mpeg">
+  Browser Anda tidak mendukung audio.
+</audio>
+
+<div class="container" id="mainContent" style="display:none;">
+  <div class="topbar">KYYS 🤍 ELIN</div>
+
+  <div class="card">
+    <div class="label">URL Gambar / Video</div>
+    <input id="urlInput" class="input-url" placeholder="https://example.com/image.jpg (Enter untuk load)">
+
+    <div class="label">Upload Gambar / Video</div>
+    <div class="upload-row">
+      <label class="file-btn" for="fileInput">Pilih File</label>
+      <input id="fileInput" type="file" accept="image/*,video/*" style="display:none">
+      <div class="file-name" id="fileName">Tidak ada file yang dipilih</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <button id="enhanceBtn" class="enhance-btn">ENHANCE</button>
+      <button id="downloadBtn" class="download-btn download-btn hidden">⬇️ DOWNLOAD HASIL</button>
+      <div class="hint" id="playHint" style="display:none">Ketuk layar untuk memutar audio.</div>
+    </div>
+  </div>
+
+  <div class="section-title">BEFORE</div>
+  <div class="preview-card"><canvas id="previewBefore" class="preview-canvas" width="720" height="360"></canvas></div>
+
+  <div class="section-title">AFTER</div>
+  <div class="preview-card"><canvas id="previewAfter" class="preview-canvas" width="720" height="360"></canvas></div>
+
+  <div class="footer">Made with 🤍 by <strong>KYYS</strong></div>
+</div>
+
+<div class="loading" id="loading"><div class="loader"><div class="title">Sabar yaa bubb 🤍</div><div>sedang di-HD-in oleh <strong>KYYS</strong>...</div></div></div>
+
+<script>
+/* ----------- Elements ----------- */
+const fileInput = document.getElementById('fileInput');
+const fileNameEl = document.getElementById('fileName');
+const urlInput = document.getElementById('urlInput');
+const enhanceBtn = document.getElementById('enhanceBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const previewBefore = document.getElementById('previewBefore');
+const previewAfter = document.getElementById('previewAfter');
+const loading = document.getElementById('loading');
+const intro = document.getElementById('intro');
+const mainContent = document.getElementById('mainContent');
+const playHint = document.getElementById('playHint');
+const bgMusic = document.getElementById('bgMusic');
+
+const beforeCtx = previewBefore.getContext('2d');
+const afterCtx = previewAfter.getContext('2d');
+
+let currentFile = null;
+let currentBlobUrl = null;
+let resultBlob = null;
+
+/* ----------- Audio: try immediate play (best-effort) ---------- */
+function tryPlayAudioImmediately() {
+  // attempt to play; if blocked, show hint and wait for user interaction
+  bgMusic.play().then(()=> {
+    playHint.style.display = 'none';
+  }).catch(()=> {
+    // blocked -> show hint (one-tap to allow)
+    playHint.style.display = 'block';
+    const once = () => { bgMusic.play().catch(()=>{}); document.removeEventListener('click', once); playHint.style.display='none'; };
+    document.addEventListener('click', once, { once: true });
+  });
+}
+
+// make it loop manually to be robust
+bgMusic.addEventListener('ended', ()=> { bgMusic.currentTime = 0; bgMusic.play().catch(()=>{}); });
+
+/* ----------- Splash (no zoom) ---------- */
+window.addEventListener('load', () => {
+  tryPlayAudioImmediately();
+  // show splash 3s then fade
+  setTimeout(()=> {
+    intro.classList.add('hide');
+    setTimeout(()=> {
+      // remove splash and show main
+      intro.remove();
+      mainContent.style.display = 'block';
+    }, 900);
+  }, 3000);
+});
+
+/* ----------- Helper: create 4K canvas ---------- */
+function create4KCanvas(){
+  const c = document.createElement('canvas');
+  c.width = 3840; c.height = 2160;
+  return c;
+}
+
+/* ----------- Preview rendering ---------- */
+function renderBefore(src){
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    const cw = previewBefore.width = 720;
+    const ch = previewBefore.height = 360;
+    beforeCtx.fillStyle = '#0a0a12'; beforeCtx.fillRect(0,0,cw,ch);
+    const scale = Math.min(cw/img.naturalWidth, ch/img.naturalHeight);
+    const w = img.naturalWidth*scale, h = img.naturalHeight*scale;
+    const x = (cw-w)/2, y = (ch-h)/2;
+    beforeCtx.drawImage(img, 0,0,img.naturalWidth,img.naturalHeight, x,y,w,h);
+  };
+  img.onerror = ()=> { /* ignore */ };
+  img.src = src;
+}
+
+/* clicking preview opens full image in new tab (if blob url or url) */
+previewBefore.addEventListener('click', ()=> {
+  if(currentBlobUrl) window.open(currentBlobUrl, '_blank');
+});
+previewAfter.addEventListener('click', ()=> {
+  if(resultBlob){
+    const u = URL.createObjectURL(resultBlob);
+    window.open(u, '_blank');
+    // revoke after short time
+    setTimeout(()=> URL.revokeObjectURL(u), 3000);
+  }
+});
+
+/* ----------- File input handling ---------- */
+fileInput.addEventListener('change', e => {
+  const f = e.target.files[0];
+  if(!f) return;
+  currentFile = f;
+  fileNameEl.textContent = f.name;
+  if(currentBlobUrl) { URL.revokeObjectURL(currentBlobUrl); currentBlobUrl = null; }
+  currentBlobUrl = URL.createObjectURL(f);
+  renderBefore(currentBlobUrl);
+  downloadBtn.classList.add('hidden'); // hide download until processed
+});
+
+/* open file chooser when clicking label */
+document.querySelector('.file-btn').addEventListener('click', ()=> fileInput.click());
+
+/* URL input */
+urlInput.addEventListener('keydown', e => {
+  if(e.key === 'Enter') loadFromUrl(urlInput.value.trim());
+});
+async function loadFromUrl(url){
+  if(!url) return;
+  try{
+    loading.classList.add('show');
+    const resp = await fetch(url);
+    if(!resp.ok) throw new Error('Fetch gagal');
+    const blob = await resp.blob();
+    const f = new File([blob],'remote',{type:blob.type});
+    currentFile = f;
+    fileNameEl.textContent = f.name || 'remote';
+    if(currentBlobUrl) { URL.revokeObjectURL(currentBlobUrl); currentBlobUrl = null; }
+    currentBlobUrl = URL.createObjectURL(f);
+    renderBefore(currentBlobUrl);
+    downloadBtn.classList.add('hidden');
+  }catch(err){
+    alert('Gagal memuat URL (CORS atau tidak valid).');
+    console.error(err);
+  }finally{
+    loading.classList.remove('show');
+  }
+}
+
+/* ----------- Process (image/video -> 4K simulated) ---------- */
+function adjustPreviewFromCanvas(off){
+  const ratio = off.width / off.height;
+  const pw = previewAfter.width = (ratio > 1 ? 720 : 360);
+  const ph = previewAfter.height = (ratio > 1 ? 360 : 720);
+  afterCtx.fillStyle = '#020214'; afterCtx.fillRect(0,0,pw,ph);
+  const scale = Math.min(pw/off.width, ph/off.height);
+  const w = off.width*scale, h = off.height*scale;
+  const x = (pw-w)/2, y = (ph-h)/2;
+  afterCtx.drawImage(off, 0,0,off.width,off.height, x,y,w,h);
+  afterCtx.strokeStyle = 'rgba(160,140,255,0.08)'; afterCtx.lineWidth = 6;
+  afterCtx.strokeRect(x-4,y-4,w+8,h+8);
+}
+
+async function processImage(src){
+  return new Promise((resolve,reject)=>{
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = ()=>{
+      try{
+        const off = create4KCanvas();
+        const octx = off.getContext('2d');
+        octx.fillStyle = '#000'; octx.fillRect(0,0,off.width,off.height);
+        const scale = Math.min(off.width/img.naturalWidth, off.height/img.naturalHeight);
+        const w = Math.round(img.naturalWidth*scale), h = Math.round(img.naturalHeight*scale);
+        const x = Math.round((off.width-w)/2), y = Math.round((off.height-h)/2);
+        octx.imageSmoothingEnabled = true; octx.imageSmoothingQuality = 'high';
+        octx.drawImage(img, 0,0,img.naturalWidth,img.naturalHeight, x,y,w,h);
+        adjustPreviewFromCanvas(off);
+        off.toBlob(b=>{ resultBlob = b; resolve(); }, 'image/png');
+      }catch(e){ reject(e); }
+    };
+    img.onerror = ()=> reject(new Error('Gagal memuat gambar (CORS?)'));
+    img.src = src;
+  });
+}
+
+async function processVideo(src){
+  return new Promise((resolve,reject)=>{
+    const video = document.createElement('video');
+    video.crossOrigin = 'anonymous';
+    video.src = src;
+    video.muted = true; video.playsInline = true; video.preload='auto';
+    let seeked = false;
+    video.addEventListener('loadedmetadata', ()=>{
+      try{ video.currentTime = Math.min(0.2, video.duration || 0); }catch(e){}
+    });
+    video.addEventListener('seeked', ()=>{
+      if(seeked) return; seeked = true;
+      try{
+        const off = create4KCanvas();
+        const octx = off.getContext('2d');
+        octx.fillStyle='#000'; octx.fillRect(0,0,off.width,off.height);
+        const sw = video.videoWidth, sh = video.videoHeight;
+        const scale = Math.min(off.width/sw, off.height/sh);
+        const w = Math.round(sw*scale), h = Math.round(sh*scale);
+        const x = Math.round((off.width-w)/2), y = Math.round((off.height-h)/2);
+        octx.imageSmoothingEnabled = true; octx.imageSmoothingQuality = 'high';
+        octx.drawImage(video, 0,0,sw,sh, x,y,w,h);
+        adjustPreviewFromCanvas(off);
+        off.toBlob(b=>{ resultBlob = b; resolve(); }, 'image/png');
+      }catch(e){ reject(e); }
+    });
+    video.onerror = ()=> reject(new Error('Gagal memuat video (CORS/format).'));
+    video.load();
+  });
+}
+
+/* ----------- Enhance button ---------- */
+enhanceBtn.addEventListener('click', async ()=>{
+  if(!currentFile){ alert('Pilih file atau masukkan URL dulu.'); return; }
+  loading.classList.add('show');
+  downloadBtn.classList.add('hidden');
+  resultBlob = null;
+  try{
+    if(currentFile.type && currentFile.type.startsWith('image/')){
+      await processImage(currentBlobUrl);
+    } else if(currentFile.type && currentFile.type.startsWith('video/')){
+      await processVideo(currentBlobUrl);
+    } else {
+      // try treat as image
+      await processImage(currentBlobUrl);
+    }
+    downloadBtn.classList.remove('hidden');
+  }catch(err){
+    alert('Gagal memproses: ' + (err.message || err));
+    console.error(err);
+  }finally{
+    loading.classList.remove('show');
+  }
+});
+
+/* ----------- Download result ---------- */
+downloadBtn.addEventListener('click', ()=>{
+  if(!resultBlob){ alert('Belum ada hasil.'); return; }
+  const url = URL.createObjectURL(resultBlob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'kyys_love_elin_result.png';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>{ try{ URL.revokeObjectURL(url); }catch(e){} }, 2000);
+});
+</script>
+</body>
+</html>
