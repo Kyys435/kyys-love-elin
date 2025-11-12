@@ -1,68 +1,218 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>KYYS 🤍 ELIN</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kyys 🤍 Elin UHD Enhancer</title>
 <style>
-:root{
-  --bg1:#08061a; --bg2:#1a0f3b;
-  --accent:#a783ff; --accent2:#c7b3ff; --muted:rgba(230,238,251,0.6);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{
-  font-family:'Orbitron',sans-serif;
-  font-weight:700;
-  color:#e7f2ff;
-  background:radial-gradient(circle at 50% 20%,var(--bg2) 0%,var(--bg1) 100%);
-  display:flex;flex-direction:column;align-items:center;min-height:100vh;overflow-x:hidden;
-}
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;font-weight:bold}
+  body{
+    background:radial-gradient(circle at center,#1b062a,#0c0014);
+    color:#fff;overflow:hidden;text-align:center;
+  }
+  #splash{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:radial-gradient(circle,#2d0b45,#100018);
+    display:flex;align-items:center;justify-content:center;
+    flex-direction:column;z-index:10;
+    animation:fadeOut 1.6s ease-in-out 2.5s forwards;
+  }
+  #splash h1{
+    font-size:2.5em;color:#d0b3ff;
+    text-shadow:0 0 25px #b26cff,0 0 50px #a970ff;
+    animation:glow 2s infinite alternate;
+  }
+  @keyframes glow{
+    from{text-shadow:0 0 10px #b26cff,0 0 20px #a970ff;}
+    to{text-shadow:0 0 30px #b26cff,0 0 60px #a970ff;}
+  }
+  @keyframes fadeOut{
+    to{opacity:0;visibility:hidden;}
+  }
 
-/* SPLASH */
-.intro{
-  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(circle at center,var(--bg2),var(--bg1));
-  z-index:9999;color:white;font-size:2.5rem;letter-spacing:4px;
-  font-weight:800;text-shadow:0 0 18px var(--accent2),0 0 34px var(--accent);
-  animation:glowPulse 2.8s infinite alternate; opacity:1; transition:opacity .9s ease;
-}
-.intro.hide{opacity:0;pointer-events:none}
-@keyframes glowPulse{from{text-shadow:0 0 10px var(--accent2),0 0 20px var(--accent)}to{text-shadow:0 0 25px white,0 0 45px var(--accent2)}}
+  main{
+    opacity:0;animation:showMain 1s ease 3.2s forwards;
+  }
+  @keyframes showMain{to{opacity:1;}}
 
-.container{width:95%;max-width:920px;margin-top:18px;text-align:center}
-.topbar{
-  height:56px;display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,0.03);border-radius:10px;color:var(--accent);
-  letter-spacing:2px;font-size:22px;box-shadow:0 6px 18px rgba(2,6,23,0.6)
-}
+  h2{color:#e0b6ff;margin:20px 0;text-shadow:0 0 10px #c77dff;}
 
-.section-title{margin-top:25px;font-size:20px;color:var(--accent);font-weight:700}
-.preview-card{width:100%;border-radius:14px;padding:10px;background:rgba(255,255,255,0.03);margin-top:8px}
-.preview-canvas{width:100%;height:auto;border-radius:10px;display:block;background:#020214;cursor:pointer}
+  input,button{
+    border:none;outline:none;padding:10px 15px;margin:5px;
+    border-radius:8px;font-size:1em;font-weight:bold;
+  }
+  input{background:#1c1028;color:#fff;width:240px;}
+  button{
+    background:linear-gradient(45deg,#9d4edd,#7b2cbf);
+    color:white;cursor:pointer;transition:0.3s;
+  }
+  button:hover{transform:scale(1.05);box-shadow:0 0 15px #c77dff;}
+  canvas{border-radius:15px;margin:15px;max-width:100%;background:#0a0a12;}
+  #loading{display:none;font-size:1.2em;color:#d0b3ff;text-shadow:0 0 10px #b26cff;}
 
-.footer{margin:25px 0;color:var(--muted);font-size:13px;font-weight:700}
-.loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(1,4,10,0.7);backdrop-filter:blur(6px);visibility:hidden;opacity:0;transition:opacity .18s,visibility .18s;z-index:9998}
-.loading.show{visibility:visible;opacity:1}
-.loader{padding:18px 24px;border-radius:12px;text-align:center;background:rgba(255,255,255,0.03);box-shadow:0 0 20px rgba(100,120,255,0.12)}
-.loader .title{color:var(--accent);font-weight:800;margin-bottom:6px}
+  .hidden{display:none;}
+  .container{margin-top:20px;}
 </style>
 </head>
 <body>
 
-<!-- SPLASH -->
-<div class="intro" id="intro">KYYS <span style="color:var(--accent)">🤍</span> ELIN</div>
+<!-- Splash -->
+<div id="splash">
+  <h1>Kyys 🤍 Elin</h1>
+</div>
 
-<audio id="bgMusic" preload="auto">
-  <source src="intro.mp3" type="audio/mpeg">
-</audio>
+<!-- Main -->
+<main>
+  <h2>UHD Enhancer</h2>
+  <div class="container">
+    <input type="file" id="fileInput" accept="image/*,video/*">
+    <button id="enhanceBtn">✨ UHD-kan</button>
+    <button id="downloadBtn" class="hidden">⬇️ Download Hasil</button>
+    <p id="fileName">Tidak ada file yang dipilih</p>
+  </div>
 
-<div class="container" id="mainContent" style="display:none;">
-  <div class="topbar">KYYS 🤍 ELIN</div>
+  <div>
+    <h3>Before</h3>
+    <canvas id="previewBefore" width="360" height="360"></canvas>
+    <h3>After</h3>
+    <canvas id="previewAfter" width="360" height="360"></canvas>
+  </div>
+  <p id="loading">✨ Sedang memproses...</p>
+</main>
 
-  <div class="section-title">AFTER</div>
-  <div class="preview-card">
+<audio id="bgAudio" src="intro.mp3" preload="auto"></audio>
+
+<script>
+  const splash=document.getElementById('splash');
+  const audio=document.getElementById('bgAudio');
+  const enhanceBtn=document.getElementById('enhanceBtn');
+  const fileInput=document.getElementById('fileInput');
+  const downloadBtn=document.getElementById('downloadBtn');
+  const fileName=document.getElementById('fileName');
+  const previewBefore=document.getElementById('previewBefore');
+  const previewAfter=document.getElementById('previewAfter');
+  const loading=document.getElementById('loading');
+  const beforeCtx=previewBefore.getContext('2d');
+  const afterCtx=previewAfter.getContext('2d');
+  let currentFile=null,currentBlobUrl=null,resultBlob=null;
+
+  // Play audio saat splash muncul
+  window.addEventListener('load',()=>{
+    audio.volume=0.7;
+    audio.play().catch(()=>{});
+  });
+
+  // Setelah splash ilang → lanjut ke main (audio tetap jalan)
+  setTimeout(()=>{
+    splash.style.display='none';
+  },3500);
+
+  fileInput.addEventListener('change',e=>{
+    const f=e.target.files[0];
+    if(!f)return;
+    currentFile=f;
+    fileName.textContent=f.name;
+    if(currentBlobUrl)URL.revokeObjectURL(currentBlobUrl);
+    currentBlobUrl=URL.createObjectURL(f);
+    renderBefore(currentBlobUrl);
+  });
+
+  function renderBefore(src){
+    const img=new Image();
+    img.onload=()=>{
+      const ratio=img.naturalWidth/img.naturalHeight;
+      previewBefore.width=ratio>1?720:360;
+      previewBefore.height=ratio>1?360:720;
+      beforeCtx.fillStyle='#0a0a12';
+      beforeCtx.fillRect(0,0,previewBefore.width,previewBefore.height);
+      const scale=Math.min(previewBefore.width/img.naturalWidth,previewBefore.height/img.naturalHeight);
+      const w=img.naturalWidth*scale,h=img.naturalHeight*scale;
+      const x=(previewBefore.width-w)/2,y=(previewBefore.height-h)/2;
+      beforeCtx.drawImage(img,x,y,w,h);
+    };
+    img.src=src;
+  }
+
+  enhanceBtn.addEventListener('click',async()=>{
+    if(!currentFile){alert('Pilih file dulu');return;}
+    loading.style.display='block';
+    downloadBtn.classList.add('hidden');
+    resultBlob=null;
+    try{
+      if(currentFile.type.startsWith('image/')) await processImage(currentBlobUrl);
+      else await processVideo(currentBlobUrl);
+      downloadBtn.classList.remove('hidden');
+    }catch(err){
+      alert('Gagal: '+err.message);
+    }finally{
+      loading.style.display='none';
+    }
+  });
+
+  function create4KCanvas(){
+    const c=document.createElement('canvas');
+    c.width=3840;c.height=2160;
+    return c;
+  }
+
+  async function processImage(src){
+    return new Promise((res,rej)=>{
+      const img=new Image();
+      img.onload=()=>{
+        const off=create4KCanvas();
+        const ctx=off.getContext('2d');
+        ctx.fillStyle='#000';
+        ctx.fillRect(0,0,off.width,off.height);
+        const scale=Math.min(off.width/img.naturalWidth,off.height/img.naturalHeight);
+        const w=img.naturalWidth*scale,h=img.naturalHeight*scale;
+        const x=(off.width-w)/2,y=(off.height-h)/2;
+        ctx.imageSmoothingEnabled=true;
+        ctx.imageSmoothingQuality='high';
+        ctx.drawImage(img,x,y,w,h);
+        adjustPreview(off);
+        off.toBlob(b=>{resultBlob=b;res();},'image/png');
+      };
+      img.onerror=()=>rej(new Error('Gagal memuat gambar'));
+      img.src=src;
+    });
+  }
+
+  async function processVideo(src){
+    return new Promise((res,rej)=>{
+      const v=document.createElement('video');
+      v.src=src;v.muted=true;v.playsInline=true;
+      v.addEventListener('loadeddata',()=>{
+        const off=create4KCanvas();
+        const ctx=off.getContext('2d');
+        ctx.drawImage(v,0,0,off.width,off.height);
+        adjustPreview(off);
+        off.toBlob(b=>{resultBlob=b;res();},'image/png');
+      });
+      v.onerror=()=>rej(new Error('Video gagal dimuat'));
+    });
+  }
+
+  function adjustPreview(off){
+    const ratio=off.width/off.height;
+    previewAfter.width=ratio>1?720:360;
+    previewAfter.height=ratio>1?360:720;
+    afterCtx.clearRect(0,0,previewAfter.width,previewAfter.height);
+    const scale=Math.min(previewAfter.width/off.width,previewAfter.height/off.height);
+    const w=off.width*scale,h=off.height*scale;
+    const x=(previewAfter.width-w)/2,y=(previewAfter.height-h)/2;
+    afterCtx.drawImage(off,x,y,w,h);
+  }
+
+  downloadBtn.addEventListener('click',()=>{
+    if(!resultBlob){alert('Belum ada hasil');return;}
+    const a=document.createElement('a');
+    const url=URL.createObjectURL(resultBlob);
+    a.href=url;a.download='kyys_love_elin_result.png';a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),2000);
+  });
+</script>
+</body>
+</html>  <div class="preview-card">
     <canvas id="previewAfter" class="preview-canvas" width="720" height="360"></canvas>
   </div>
 
