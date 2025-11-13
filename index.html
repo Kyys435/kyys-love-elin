@@ -1,68 +1,46 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Kyys 🤍 Eline UHD</title>
-<style>
-  body {
-    margin: 0;
-    background: radial-gradient(circle at top, #0a0015, #000);
-    color: white;
-    font-family: "Poppins", sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    overflow: hidden;
-  }
-  #splash {
-    position: absolute;
-    top: 40%;
-    font-size: 3em;
-    color: #b966ff;
-    text-shadow: 0 0 15px #b966ff, 0 0 30px #b966ff;
-    animation: glow 2s ease-in-out infinite alternate;
-  }
-  @keyframes glow {
-    from { opacity: 0.4; text-shadow: 0 0 5px #b966ff; }
-    to { opacity: 1; text-shadow: 0 0 25px #b966ff, 0 0 50px #b966ff; }
-  }
-  #app {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
-  button, input[type="file"] {
-    background: #7d29ff;
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 1.1em;
-    padding: 12px 24px;
-    cursor: pointer;
-    box-shadow: 0 0 20px #7d29ff;
-    transition: 0.3s;
-  }
-  button:hover, input[type="file"]:hover {
-    box-shadow: 0 0 30px #b966ff;
-    background: #9e4bff;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kyys Cool🥶</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="splash">
+    <h1>Kyys Cool🥶</h1>
+  </div>
 
-<audio id="intro" src="intro.mp3" autoplay loop></audio>
+  <div class="chat-container hidden">
+    <header>
+      <h2>Chat Global 💬</h2>
+      <button id="settingsBtn">⚙️</button>
+    </header>
 
-<div id="splash">Kyys 🤍 Eline</div>
+    <div class="chat-box" id="chatBox">
+      <div class="message owner">Selamat datang di Kyys Cool🥶!</div>
+      <div class="message user">Halo semuanya!</div>
+    </div>
 
-<div id="app">
-  <input type="file" id="fileInput" accept="image/jpeg" />
-  <button id="uhdBtn">UHD (4K)</button>
-  <a id="downloadLink" style="display:none" download="UHD_Result.jpg">
-    <button id="downloadBtn">DOWNLOAD</button>
-  </a>
+    <div class="chat-input">
+      <input type="text" id="msgInput" placeholder="Ketik pesan..." />
+      <button id="sendBtn">📤</button>
+    </div>
+  </div>
+
+  <!-- ⚙️ Pengaturan -->
+  <div id="settings" class="settings hidden">
+    <h3>🎵 Pengaturan Suara</h3>
+    <label>Volume: <span id="volumeValue">100%</span></label>
+    <input type="range" id="volumeSlider" min="0" max="100" value="100">
+    <button id="closeSettings">Tutup</button>
+  </div>
+
+  <audio id="bgMusic" src="intro.mp3" autoplay loop></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>  </a>
 </div>
 
 <script>
